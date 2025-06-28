@@ -1,6 +1,7 @@
 package daysteps
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"strconv"
@@ -47,6 +48,8 @@ func DayActionInfo(data string, weight, height float64) string {
 	}
 
 	if steps <= 0 {
+		err := errors.New("parsePackage: the number of steps is zero")
+		log.Println(err) // Логируем ошибку
 		return ""
 	}
 

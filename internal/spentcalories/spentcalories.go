@@ -3,6 +3,7 @@ package spentcalories
 import (
 	"errors"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -32,6 +33,7 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 	}
 
 	if steps <= 0 {
+		log.Println(err) // Логируем ошибку
 		return 0, "", 0, errors.New("Ошибка: число введенных шагов должно быть положительным")
 	}
 
@@ -124,7 +126,9 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 
 func RunningSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error) {
 	if steps <= 0 {
-		return 0, errors.New("Ошибка: число шагов должно быть положительным")
+		err := errors.New("parsePackage: the number of steps is zero")
+		log.Println(err) // Логируем ошибку
+		return 0, err
 	}
 	if weight <= 0 {
 		return 0, errors.New("Ошибка: вес должен быть положительным")
@@ -145,7 +149,9 @@ func RunningSpentCalories(steps int, weight, height float64, duration time.Durat
 
 func WalkingSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error) {
 	if steps <= 0 {
-		return 0, errors.New("Ошибка: шагов должно быть положительным")
+		err := errors.New("parsePackage: the number of steps is zero")
+		log.Println(err) // Логируем ошибку
+		return 0, err
 	}
 	if weight <= 0 {
 		return 0, errors.New("Ошибка: вес должен быть положительным")
