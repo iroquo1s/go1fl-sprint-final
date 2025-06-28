@@ -1,7 +1,6 @@
 package daysteps
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"strconv"
@@ -19,37 +18,35 @@ const (
 )
 
 func parsePackage(data string) (int, time.Duration, error) {
-	parts := strings.Split(data, ",")
-	if len(parts) != 2 {
-		return 0, 0, fmt.Errorf("Ошибка: некорректный формат данных: ожидается две части")
+	entries := strings.Split(data, ",")
+	if len(entries) != 2 {
+		return 0, 0, fmt.Errorf("неверный формат")
 	}
-
-	stepsStr := parts[0]
-	durationStr := parts[1]
-
-	steps, err := strconv.Atoi(stepsStr)
+	steps, err := strconv.Atoi(entries[0])
 	if err != nil {
-		return 0, 0, fmt.Errorf("Ошибка: ошибка преобразования количества шагов: %w", err)
+		return 0, 0, err
 	}
-
-	duration, err := time.ParseDuration(durationStr)
+	if steps < 1 {
+		return 0, 0, fmt.Errorf("неверное число шагов")
+	}
+	duration, err := time.ParseDuration(entries[1])
 	if err != nil {
-		return 0, 0, fmt.Errorf("Ошибка: ошибка преобразования продолжительности: %w", err)
+		return 0, 0, err
 	}
-
+	if duration <= 0 {
+		return 0, 0, fmt.Errorf("неверная продолжительность")
+	}
 	return steps, duration, nil
 }
 
 func DayActionInfo(data string, weight, height float64) string {
 	steps, duration, err := parsePackage(data)
 	if err != nil {
-		log.Printf("Ошибка:%s", err)
+		log.Println(err)
 		return ""
 	}
 
-	if steps <= 0 {
-		err := errors.New("parsePackage: the number of steps is zero")
-		log.Println(err) // Логируем ошибку
+	if steps < 1 {
 		return ""
 	}
 
@@ -58,7 +55,7 @@ func DayActionInfo(data string, weight, height float64) string {
 
 	calories, err := spentcalories.WalkingSpentCalories(steps, weight, height, duration)
 	if err != nil {
-		log.Printf("Ошибка: ошибка расчета калорий:%s", err)
+		log.Println(err)
 		return ""
 	}
 
